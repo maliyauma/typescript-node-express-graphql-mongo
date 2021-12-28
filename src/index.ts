@@ -1,17 +1,15 @@
 // @ts-check
-import { typeDefs } from './typeDefs/typeDefs';
-
+import 'reflect-metadata'
 import express  from 'express';
 import { createServer } from 'http';
-import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServer } from 'apollo-server-express';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { subscribe } from 'graphql';
 import { execute } from 'graphql';
 import mongoose  from 'mongoose';
-import { catResolvers } from './resolvers/catResolver';
-import { PostResolver } from './resolvers/PostResolver';
-import { UserResolver } from './resolvers/UserResolver';
+import {buildSchema} from 'type-graphql'
+import { TestResolver } from './resolvers/TestResolver';
+
 
 
 
@@ -19,11 +17,16 @@ import { UserResolver } from './resolvers/UserResolver';
   const PORT = 4000;
   const app = express();
   const httpServer = createServer(app);
-  const schema = makeExecutableSchema({ typeDefs,resolvers:[catResolvers,PostResolver,UserResolver]});
+  // const schema = makeExecutableSchema({ typeDefs,resolvers:[catResolvers,PostResolver,UserResolver]});
 
+  const schema=await buildSchema({
+    resolvers:[TestResolver],
+    validate:false
+})
+  
   const server = new ApolloServer({
     schema,
-  });
+  })
   await server.start().catch(e=>{console.log("error starting server===== ")})
   server.applyMiddleware({ app });
 
@@ -31,6 +34,7 @@ import { UserResolver } from './resolvers/UserResolver';
   // @ts-ignore
   mongoose.connect(uri, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(e=>console.log("connected to mongo db"))
+
   SubscriptionServer.create(
     { schema, execute, subscribe },
     { server: httpServer, path: server.graphqlPath }
@@ -46,4 +50,4 @@ import { UserResolver } from './resolvers/UserResolver';
   });
 
 
-})();
+})().catch(e=> console.log('error on server ====== ',e))
