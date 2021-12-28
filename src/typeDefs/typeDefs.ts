@@ -39,9 +39,10 @@ type Query {
     deletePost(id: ID!): Boolean!
   }
 
+
   type Subscription {
-  postCreated: Post
-}
+   newPost: Post
+  }
 
 
 `;

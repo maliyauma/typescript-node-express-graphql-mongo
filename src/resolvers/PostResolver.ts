@@ -2,13 +2,12 @@
 import { Post } from '../model/PostModel';
 import {HydratedDocument } from 'mongoose';
 import { IPost } from './../model/PostModel';
+import { PubSub } from 'graphql-subscriptions';
 
-// interface IPost extends Document {
-//   title: string;
-//   desc: string;
-// }
+const pubsub = new PubSub();
+const NEW_POST = "NEW_POST";
 
-//resolvers
+//post resolver
 export const PostResolver = {
   Query: {
     defaultPost: () => {
@@ -28,8 +27,15 @@ export const PostResolver = {
 // mutationShape:(parent, args, context, info)=>{}
   createPost:(parent, {title,desc})=>{
    console.log("new post args ####",parent)
+   //@ts-ignore
    const post: HydratedDocument<IPost>=new Post({title,desc})
-   post.save().then((p)=>console.log("create post response ========",p))
+   post.save().then((p)=>{
+     console.log("create post response ========",p)
+     pubsub.publish(NEW_POST, {
+       //@ts-ignore
+      newPost: p.data
+    });
+    })
    .catch((p)=>console.log("error response ========",p))
    return post
   },
@@ -59,6 +65,11 @@ export const PostResolver = {
   }
  },
 
-  }
+  },
+  Subscription: {
+  newPost: {
+      subscribe: () => pubsub.asyncIterator(NEW_POST)
+    }
+  },
 };
 
