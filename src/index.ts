@@ -9,6 +9,7 @@ import { execute } from 'graphql';
 import mongoose  from 'mongoose';
 import {buildSchema} from 'type-graphql'
 import { TestResolver } from './resolvers/TestResolver';
+import { SampleResolver } from './resolvers/SampleResolver';
 
 
 
@@ -20,7 +21,7 @@ import { TestResolver } from './resolvers/TestResolver';
   // const schema = makeExecutableSchema({ typeDefs,resolvers:[catResolvers,PostResolver,UserResolver]});
 
   const schema=await buildSchema({
-    resolvers:[TestResolver],
+    resolvers:[TestResolver,SampleResolver],
     validate:false
 })
   

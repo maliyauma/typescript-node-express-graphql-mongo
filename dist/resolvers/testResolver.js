@@ -17,16 +17,24 @@ const Test_1 = require("../entities/Test");
 const type_graphql_1 = require("type-graphql");
 const Test_2 = require("../entities/Test");
 const types_1 = require("../types");
+const NEWUSER = "NEW_USER_ADDED";
 let TestResolver = class TestResolver {
     async users() {
         const users = await Test_2.UserModel.find({});
         return users;
     }
-    async createUser(input) {
-        const user = new Test_2.UserModel({ name: input.name, email: input.email });
-        await user.save()
-            .then(e => { console.log('user response =====', e); });
+    async createUser(input, publish) {
+        const user = new Test_2.UserModel({
+            name: input.name,
+            email: input.email,
+        });
+        await user.save().then(async (e) => {
+            await publish(e);
+        });
         return user;
+    }
+    userAdded({ id, name, email }) {
+        return { id, name, email };
     }
 };
 __decorate([
@@ -37,11 +45,19 @@ __decorate([
 ], TestResolver.prototype, "users", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Test_1.User),
-    __param(0, (0, type_graphql_1.Arg)('input')),
+    __param(0, (0, type_graphql_1.Arg)("input")),
+    __param(1, (0, type_graphql_1.PubSub)(NEWUSER)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [types_1.UserInput]),
+    __metadata("design:paramtypes", [types_1.UserInput, Function]),
     __metadata("design:returntype", Promise)
 ], TestResolver.prototype, "createUser", null);
+__decorate([
+    (0, type_graphql_1.Subscription)({ topics: NEWUSER }),
+    __param(0, (0, type_graphql_1.Root)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Test_1.User)
+], TestResolver.prototype, "userAdded", null);
 TestResolver = __decorate([
     (0, type_graphql_1.Resolver)(() => Test_1.User)
 ], TestResolver);

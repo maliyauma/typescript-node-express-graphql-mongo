@@ -4,6 +4,7 @@ import { prop as Property} from "@typegoose/typegoose";
 import { Field, InputType } from 'type-graphql';
 import { User } from "./entities/Test";
 import { ObjectType } from 'type-graphql';
+import { ID } from 'type-graphql';
 
 @InputType()
 export class UserInput{
@@ -35,4 +36,21 @@ errors?: FieldError[];
 user?: User;
    }
 
+   
+@ObjectType()
+export class Notification {
+  @Field(() => ID)
+  id: number;
+
+  @Field(()=>User,{ nullable: true })
+  message?: User
+
+  @Field(type => Date)
+  date: Date;
+}
+
+export interface NotificationPayload {
+  id: number;
+  message?: User;
+}
    

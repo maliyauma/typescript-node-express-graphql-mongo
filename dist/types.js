@@ -9,11 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserResponse = exports.UserInput = void 0;
+exports.Notification = exports.UserResponse = exports.UserInput = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const type_graphql_1 = require("type-graphql");
 const Test_1 = require("./entities/Test");
 const type_graphql_2 = require("type-graphql");
+const type_graphql_3 = require("type-graphql");
 let UserInput = class UserInput {
 };
 __decorate([
@@ -57,4 +58,22 @@ UserResponse = __decorate([
     (0, type_graphql_2.ObjectType)()
 ], UserResponse);
 exports.UserResponse = UserResponse;
+let Notification = class Notification {
+};
+__decorate([
+    (0, type_graphql_1.Field)(() => type_graphql_3.ID),
+    __metadata("design:type", Number)
+], Notification.prototype, "id", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(() => Test_1.User, { nullable: true }),
+    __metadata("design:type", Test_1.User)
+], Notification.prototype, "message", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(type => Date),
+    __metadata("design:type", Date)
+], Notification.prototype, "date", void 0);
+Notification = __decorate([
+    (0, type_graphql_2.ObjectType)()
+], Notification);
+exports.Notification = Notification;
 //# sourceMappingURL=types.js.map

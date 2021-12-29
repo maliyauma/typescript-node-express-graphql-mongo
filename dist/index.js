@@ -13,12 +13,13 @@ const graphql_2 = require("graphql");
 const mongoose_1 = __importDefault(require("mongoose"));
 const type_graphql_1 = require("type-graphql");
 const TestResolver_1 = require("./resolvers/TestResolver");
+const SampleResolver_1 = require("./resolvers/SampleResolver");
 (async () => {
     const PORT = 4000;
     const app = (0, express_1.default)();
     const httpServer = (0, http_1.createServer)(app);
     const schema = await (0, type_graphql_1.buildSchema)({
-        resolvers: [TestResolver_1.TestResolver],
+        resolvers: [TestResolver_1.TestResolver, SampleResolver_1.SampleResolver],
         validate: false
     });
     const server = new apollo_server_express_1.ApolloServer({
